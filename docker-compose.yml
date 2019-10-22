@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+  matomo-mysql:
+    container_name: matomo-mysql
+    image: mysql:5.7
+    restart: always
+    volumes:
+     - ./volumes/mysql:/var/lib/mysql
+    ports:
+     - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: matomo
+
+  matomo:
+    container_name: matomo
+    image: matomo:3.11.0-apache
+    restart: always
+    ports:
+     - "8008:80"
+    environment:
+      MATOMO_DATABASE_HOST: matomo-mysql
+      MATOMO_DATABASE_USERNAME: root
+      MATOMO_DATABASE_PASSWORD: password
+      MATOMO_DATABASE_DBNAME: matomo
+    volumes:
+      - ./volumes/matomo/config:/var/www/html/config
+      - ./volumes/matomo/ssmtp.conf:/etc/ssmtp/ssmtp.conf
+      - ./volumes/matomo/revaliases:/etc/ssmtp/revaliases
