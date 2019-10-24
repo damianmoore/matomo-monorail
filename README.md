@@ -10,7 +10,7 @@ This project's middleware collects requests in a similar way to standard webserv
 
 ## Usage
 
-You will need Motomo installed. For development purposes you can use the included Docker Compose file. You will still need to do some setup and get the generated API auth token.
+You will need Motomo installed. For development purposes you can use the included Docker Compose file. You will still need to do some setup and get the generated API auth token (Administration > API).
 
     docker-compose up
 

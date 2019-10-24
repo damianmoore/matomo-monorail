@@ -11,6 +11,7 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
+
 def save_request(request):
     # Don't log requests just fetching the tracking JS file
     if 'matomo.js' in request.path:
@@ -33,7 +34,7 @@ def save_request(request):
         type=type,
         method=request.method,
         url=url,
-        ip=request.META['REMOTE_ADDR'],
+        ip=get_client_ip(request),
         user_agent=request.META['HTTP_USER_AGENT'],
         referer=request.META.get('HTTP_REFERER', '')
     ).save()
