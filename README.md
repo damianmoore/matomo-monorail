@@ -66,3 +66,42 @@ As this works as a proxy through to your real Matomo instance, you have to hook 
         path('matomo.php', proxy_php),
         ...
     ]
+
+
+## Troubleshooting
+
+### Correct IP address of user
+
+You need to make sure the IP address of the user is being passed through any proxies you may have in front of your Django server. If this is not passed through, you will get a server-logged address of something like `127.0.0.1` that doesn't match any client-logged addresses and a duplicate visit will be sent to Matomo's API. The code extracting the IP address checks if `request.META.get('HTTP_X_FORWARDED_FOR')` exists.
+
+Example minimal Nginx configuration to pass forwarded IP address to Django:
+
+```
+location / {
+    proxy_pass        http://localhost:8000;
+    proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+}
+```
+
+### Correct HTTP scheme (HTTPS) of user
+
+Another possible way you might get duplicates showing up in Matomo is if the users access your site via `https://` but the connection from your reverse proxy to Django is plain `http://`. Aparently the inverse can happen as well if the connection from your reverse proxy to Django is secure. To solve this there are two things you need to do: 1) add a header in your proxy to pass the scheme to Django, 2) Tell Django which header and it's value determine `request.is_secure()` to equal `True`.
+
+Example minimal Nginx configuration to pass forwarded scheme to  Django:
+
+```
+location / {
+    proxy_pass        http://localhost:8000;
+    proxy_set_header  X-Forwarded-Proto $scheme;
+}
+```
+
+Example Django setting:
+
+``` python
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+```
+
+### Multiple proxies stripping headers
+
+It's possible your setup has ore than one layer of proxying before you hit Django. This is especially try If you are living in a containerised world. Where you have to use header settings above to pass client IP and scheme, make sure this is done ONLY at the outermost layer (which the client will hit). Otherwise you are likely to overwrite the headers you already set and will end up with just an internal IP address and `HTTP` rather than `HTTPS` scheme.

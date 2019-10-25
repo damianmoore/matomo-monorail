@@ -22,3 +22,20 @@ def proxy_php(request):
     }
     response = requests.get(url, headers=headers)
     return HttpResponse(response.content, status=response.status_code, content_type=response.headers['Content-Type'])
+
+
+def check_tracking_js(request):
+    context = {
+        'matomo_site_id':   settings.MATOMO_SITE_ID,
+        'ip':               get_client_ip(request),
+        'is_secure':        request.is_secure(),
+    }
+    return render(request, 'matomo_monorail/check_tracking_js.html', context)
+
+
+def check_tracking_no_js(request):
+    context = {
+        'ip':               get_client_ip(request),
+        'is_secure':        request.is_secure(),
+    }
+    return render(request, 'matomo_monorail/check_tracking_no_js.html', context)
