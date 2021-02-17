@@ -41,7 +41,7 @@ class Command(BaseCommand):
         for proxy_request in Request.objects.filter(type='S').filter(created__lte=end_datetime).order_by('created'):
             min_created = proxy_request.created - timedelta(seconds=SECONDS_TO_CONSOLIDATE)
             max_created = proxy_request.created + timedelta(seconds=SECONDS_TO_CONSOLIDATE)
-            match = Request.objects.filter(type='C', method=proxy_request.method, url=proxy_request.url, ip=proxy_request.ip, user_agent=proxy_request.user_agent).order_by('created').first()
+            match = Request.objects.filter(type='C', url=proxy_request.url, ip=proxy_request.ip, user_agent=proxy_request.user_agent).order_by('created').first()
 
             if match:
                 match.delete()

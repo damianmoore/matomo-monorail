@@ -10,7 +10,7 @@ def proxy_js(request):
     url = settings.MATOMO_BASE_URL + request.get_full_path()
     save_request(request)
     response = requests.get(url)
-    return HttpResponse(response.content, status=response.status_code, content_type=response.headers['Content-Type'])
+    return HttpResponse(response.content, status=response.status_code, content_type=response.headers.get('Content-Type'))
 
 
 def proxy_php(request):
@@ -21,7 +21,7 @@ def proxy_php(request):
         'User-agent': request.META['HTTP_USER_AGENT'],
     }
     response = requests.get(url, headers=headers)
-    return HttpResponse(response.content, status=response.status_code, content_type=response.headers['Content-Type'])
+    return HttpResponse(response.content, status=response.status_code, content_type=response.headers.get('content-type'))
 
 
 def check_tracking_js(request):
