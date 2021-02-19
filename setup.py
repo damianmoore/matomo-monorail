@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
    name='matomo_monorail',
-   version='0.1.6',
+   version='0.1.7',
    description='Improve Matomo analytics with server-side traffic using Django',
    author='Damian Moore',
    author_email='damian@epixstudios.co.uk',
