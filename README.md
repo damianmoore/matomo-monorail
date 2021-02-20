@@ -68,6 +68,18 @@ As this works as a proxy through to your real Matomo instance, you have to hook 
     ]
 
 
+## Building
+
+Bump up the version number in `setup.py` then build the Python source package:
+
+    python setup.py sdist
+
+Tag and push Git commit as version:
+
+    git tag v0.1.7
+    git push origin --tags
+
+
 ## Troubleshooting
 
 ### Correct IP address of user

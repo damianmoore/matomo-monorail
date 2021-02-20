@@ -9,7 +9,7 @@ IPV4_REGEX = re.compile(r'[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
 def get_client_ip(request):
     x_forwarded_for = re.search(IPV4_REGEX, request.META.get('HTTP_X_FORWARDED_FOR', ''))
     if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
+        ip = x_forwarded_for.group(0)
     else:
         ip = request.META.get('REMOTE_ADDR', '')
     return ip
@@ -38,6 +38,6 @@ def save_request(request):
         method=request.method,
         url=url,
         ip=get_client_ip(request),
-        user_agent=request.META['HTTP_USER_AGENT'],
+        user_agent=request.META.get('HTTP_USER_AGENT', ''),
         referer=request.META.get('HTTP_REFERER', '')
     ).save()
