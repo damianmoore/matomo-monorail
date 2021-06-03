@@ -8,7 +8,6 @@ from django.utils import timezone
 import requests
 
 from matomo_monorail.models import Request
-from matomo_monorail.utils import get_client_ip
 
 
 SECONDS_TO_CONSOLIDATE = 10
@@ -37,10 +36,12 @@ class Command(BaseCommand):
     def sync_requests(self):
         print('Syncing requests')
 
+        if not settings.MATOMO_BASE_URL:
+            print('settings.MATOMO_BASE_URL is not configured')
+            exit(1)
+
         end_datetime = timezone.now() - timedelta(seconds=SECONDS_TO_CONSOLIDATE)
         for proxy_request in Request.objects.filter(type='S').filter(created__lte=end_datetime).order_by('created'):
-            min_created = proxy_request.created - timedelta(seconds=SECONDS_TO_CONSOLIDATE)
-            max_created = proxy_request.created + timedelta(seconds=SECONDS_TO_CONSOLIDATE)
             match = Request.objects.filter(type='C', url=proxy_request.url, ip=proxy_request.ip, user_agent=proxy_request.user_agent).order_by('created').first()
 
             if match:

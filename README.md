@@ -76,7 +76,8 @@ Bump up the version number in `setup.py` then build the Python source package:
 
 Tag and push Git commit as version:
 
-    git tag v0.1.7
+    git commit -m ...
+    git tag vX.X.X
     git push origin --tags
 
 
